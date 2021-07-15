@@ -28,6 +28,10 @@ namespace HandyControl.Tools.Converter
                     return Visibility.Collapsed;
                 }
             }
+            if (parameter is string useAny && useAny == "UseAny")
+            {
+                return arr.Any(item => item) ? Visibility.Visible : Visibility.Collapsed;
+            }
             return arr.All(item => item) ? Visibility.Visible : Visibility.Collapsed;
         }
 

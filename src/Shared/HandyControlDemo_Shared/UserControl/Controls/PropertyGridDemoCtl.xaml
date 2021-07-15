@@ -10,7 +10,19 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <hc:PropertyGrid Width="500" SelectedObject="{Binding DemoModel}"/>
+
+            <hc:PropertyGrid Width="500"
+                               SelectedObject="{Binding DemoModel}"
+                               FlattenChildProperties="ParentNameAsCategory"
+                               GroupHeaderMargin="0,0,0,5"
+                               SortByPriority="True">
+                <hc:PropertyGrid.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Height="20" Text="{Binding}" />
+                    </DataTemplate>
+                </hc:PropertyGrid.GroupHeaderTemplate>
+            </hc:PropertyGrid>
+
             <StackPanel hc:TitleElement.TitleWidth="168" Grid.Row="1" Margin="20,16,17,10">
                 <TextBox hc:TitleElement.Title="String" hc:TitleElement.TitlePlacement="Left" Style="{StaticResource TextBoxExtend}" Text="{Binding DemoModel.String,Mode=OneWay}" IsReadOnly="True"/>
                 <TextBox hc:TitleElement.Title="Enum" hc:TitleElement.TitlePlacement="Left" Style="{StaticResource TextBoxExtend}" Text="{Binding DemoModel.Enum,Mode=OneWay}" IsReadOnly="True" Margin="0,6,0,0"/>

@@ -697,8 +697,16 @@
 				<GeometryDrawing o:Freeze="True" Brush="#FF00529C" Geometry="F1M15,8L15,10 12,13 9,10 9,8 11,10 11,4 13,4 13,10z" />
 			</DrawingGroup>
 		</DrawingBrush.Drawing>
-	</DrawingBrush>
-	<ItemsPanelTemplate x:Key="StepBarHorizontalItemsPanelTemplate">
+    </DrawingBrush>
+    <DrawingBrush x:Key="SortByHierarchyLevelDrawingBrush" o:Freeze="True">
+        <DrawingBrush.Drawing>
+            <DrawingGroup o:Freeze="True">
+                <GeometryDrawing o:Freeze="True" Brush="#FF000000" Geometry="F1 M470,470z M0,0z M346.494,283.658L346.494,358.951 296.758,358.951 296.758,283.658 245,283.658 245,186.343 296.758,186.343 296.758,0 173.242,0 173.242,186.343 225,186.343 225,283.658 173.242,283.658 173.242,358.951 123.516,358.951 123.516,283.658 0,283.658 0,470 123.516,470 123.516,378.951 173.242,378.951 173.242,470 296.758,470 296.758,378.951 346.494,378.951 346.494,470 470,470 470,283.658 346.494,283.658z M193.242,20L276.758,20 276.758,166.343 193.242,166.343 193.242,20z M103.516,450L20,450 20,303.658 103.516,303.658 103.516,450z M276.758,450L193.242,450 193.242,303.658 276.758,303.658 276.758,450z M450,450L366.494,450 366.494,303.658 450,303.658 450,450z" />
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <ItemsPanelTemplate x:Key="StepBarHorizontalItemsPanelTemplate">
 		<UniformGrid Rows="1" />
 	</ItemsPanelTemplate>
 	<ItemsPanelTemplate x:Key="StepBarVerticalItemsPanelTemplate">
@@ -9770,18 +9778,29 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition />
 							</Grid.RowDefinitions>
-							<DockPanel LastChildFill="True" Margin="0,0,0,6">
-								<hc:ButtonGroup Margin="0,0,6,0" Visibility="{Binding ShowSortButton,RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" Style="{StaticResource ButtonGroupSolid}">
-									<RadioButton Command="interactivity:ControlCommands.SortByCategory" IsChecked="True">
-										<Rectangle Width="16" Height="16" Fill="{StaticResource SortByCategoryDrawingBrush}" />
-									</RadioButton>
-									<RadioButton Command="interactivity:ControlCommands.SortByName">
-										<Rectangle Width="16" Height="16" Fill="{StaticResource SortByNameDrawingBrush}" />
-									</RadioButton>
-								</hc:ButtonGroup>
-								<hc:SearchBar x:Name="PART_SearchBar" IsRealTime="True" ShowClearButton="True" Style="{StaticResource SearchBarPlus}" />
-							</DockPanel>
-							<hc:PropertyItemsControl Grid.Row="1" x:Name="PART_ItemsControl" Style="{StaticResource PropertyItemsControlBaseStyle}">
+                            <DockPanel LastChildFill="True" Margin="0,0,0,6">
+                                <DockPanel.Visibility>
+                                    <MultiBinding Converter="{StaticResource BooleanArr2VisibilityConverter}"
+                                                  ConverterParameter="UseAny">
+                                        <Binding Path="ShowSortButton" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ShowSearchBar" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </DockPanel.Visibility>
+                                <hc:ButtonGroup Margin="0,0,6,0" Visibility="{Binding ShowSortButton,RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" Style="{StaticResource ButtonGroupSolid}">
+                                    <RadioButton Command="interactivity:ControlCommands.SortByCategory" IsChecked="True">
+                                        <Rectangle Width="16" Height="16" Fill="{StaticResource SortByCategoryDrawingBrush}" />
+                                    </RadioButton>
+                                    <RadioButton Command="interactivity:ControlCommands.SortByName">
+                                        <Rectangle Width="16" Height="16" Fill="{StaticResource SortByNameDrawingBrush}" />
+                                    </RadioButton>
+                                    <RadioButton Command="interactivity:ControlCommands.SortByHierarchyLevel">
+                                        <Rectangle Width="16" Height="16" Fill="{StaticResource SortByHierarchyLevelDrawingBrush}" />
+                                    </RadioButton>
+                                </hc:ButtonGroup>
+                                <hc:SearchBar x:Name="PART_SearchBar" IsRealTime="True" ShowClearButton="True" Style="{StaticResource SearchBarPlus}"
+                                              Visibility="{Binding ShowSearchBar, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" />
+                            </DockPanel>
+                            <hc:PropertyItemsControl Grid.Row="1" x:Name="PART_ItemsControl" Style="{StaticResource PropertyItemsControlBaseStyle}">
 								<hc:PropertyItemsControl.GroupStyle>
 									<GroupStyle ContainerStyle="{StaticResource PropertyGroupItemBaseStyle}" />
 								</hc:PropertyItemsControl.GroupStyle>

@@ -268,9 +268,16 @@ namespace HandyControl.Controls
         /// </summary>
         private void UpdateItemsPosition()
         {
-            if (!CheckNull()) return;
-            if (!_appliedTemplate) return;
-            if (Items.Count == 0) return;
+            if (!CheckNull() || !_appliedTemplate || Items.Count == 0)
+            {
+                return;
+            }
+
+            if (PageIndex == -1)
+            {
+                PageIndex = 0;
+            }
+
             if (!IsCenter)
             {
                 ItemsHost.BeginAnimation(MarginProperty,

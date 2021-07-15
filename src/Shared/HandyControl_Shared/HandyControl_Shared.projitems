@@ -83,6 +83,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Text\SimpleText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Window\GlowWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\DateTimeRangeComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Annotations\HierarchyLevelAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Annotations\PriorityAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Annotations\NecessaryAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Enum\Flattening.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Enum\SortingDefault.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Enum\VisualWrapping.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Flex\FlexContentJustify.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Flex\FlexContentAlignment.cs" />
@@ -375,7 +380,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\ScreenHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\SecurityHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\SingleOpenHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\SystemHelper.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\SystemHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\TextHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\TokenizerHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools\Helper\TouchDragMoveWindowHelper.cs" />

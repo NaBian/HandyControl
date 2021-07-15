@@ -698,6 +698,13 @@
 			</DrawingGroup>
 		</DrawingBrush.Drawing>
 	</DrawingBrush>
+	<DrawingBrush x:Key="SortByHierarchyLevelDrawingBrush" o:Freeze="True">
+		<DrawingBrush.Drawing>
+			<DrawingGroup o:Freeze="True">
+				<GeometryDrawing o:Freeze="True" Brush="#FF000000" Geometry="F1 M470,470z M0,0z M346.494,283.658L346.494,358.951 296.758,358.951 296.758,283.658 245,283.658 245,186.343 296.758,186.343 296.758,0 173.242,0 173.242,186.343 225,186.343 225,283.658 173.242,283.658 173.242,358.951 123.516,358.951 123.516,283.658 0,283.658 0,470 123.516,470 123.516,378.951 173.242,378.951 173.242,470 296.758,470 296.758,378.951 346.494,378.951 346.494,470 470,470 470,283.658 346.494,283.658z M193.242,20L276.758,20 276.758,166.343 193.242,166.343 193.242,20z M103.516,450L20,450 20,303.658 103.516,303.658 103.516,450z M276.758,450L193.242,450 193.242,303.658 276.758,303.658 276.758,450z M450,450L366.494,450 366.494,303.658 450,303.658 450,450z" />
+			</DrawingGroup>
+		</DrawingBrush.Drawing>
+	</DrawingBrush>
 	<ItemsPanelTemplate x:Key="StepBarHorizontalItemsPanelTemplate">
 		<UniformGrid Rows="1" />
 	</ItemsPanelTemplate>
@@ -9791,6 +9798,7 @@
 	</Style>
 	<Style x:Key="PropertyItemToolTipBaseStyle" BasedOn="{StaticResource {x:Type ToolTip}}" TargetType="ToolTip">
 		<Setter Property="Padding" Value="10" />
+		<Setter Property="hc:BorderElement.CornerRadius" Value="2" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToolTip">
@@ -9819,6 +9827,9 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="PropertyGridTextBoxExtend" BasedOn="{StaticResource TextBoxExtendBaseStyle}" TargetType="TextBox">
+		<Setter Property="Margin" Value="0 -10 0 -7" />
+	</Style>
 	<Style x:Key="PropertyItemBaseStyle" TargetType="hc:PropertyItem">
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Margin" Value="0,0,0,6" />
@@ -9827,11 +9838,11 @@
 				<ControlTemplate TargetType="hc:PropertyItem">
 					<GroupBox Style="{StaticResource GroupBoxOriginal}" hc:TitleElement.TitlePlacement="Left">
 						<GroupBox.Header>
-							<TextBlock Padding="0,0,10,0" Width="{Binding Path=(hc:TitleElement.TitleWidth).Value,RelativeSource={RelativeSource TemplatedParent}}" Text="{TemplateBinding DisplayName}" TextTrimming="CharacterEllipsis">
-								<TextBlock.ToolTip>
+							<TextBox Padding="0,0,10,0" Width="{Binding Path=(hc:TitleElement.TitleWidth).Value,RelativeSource={RelativeSource TemplatedParent}}" Text="{TemplateBinding DisplayName}" IsReadOnly="True" hc:InfoElement.Necessary="{TemplateBinding IsNecessary}" hc:TitleElement.TitlePlacement="Left" hc:TitleElement.Title="{TemplateBinding DisplayName}" Style="{StaticResource PropertyGridTextBoxExtend}">
+								<TextBox.ToolTip>
 									<ToolTip Style="{StaticResource PropertyItemToolTipBaseStyle}" Content="{TemplateBinding Description}" />
-								</TextBlock.ToolTip>
-							</TextBlock>
+								</TextBox.ToolTip>
+							</TextBox>
 						</GroupBox.Header>
 						<ContentPresenter ContentSource="EditorElement" />
 					</GroupBox>
@@ -9858,12 +9869,12 @@
 		</Style.Triggers>
 	</Style>
 	<Style x:Key="PropertyGroupItemBaseStyle" TargetType="GroupItem">
-		<Setter Property="Margin" Value="0,0,0,6" />
+		<Setter Property="Margin" Value="{Binding Path=GroupHeaderMargin, RelativeSource={RelativeSource AncestorType={x:Type hc:PropertyGrid}, Mode=FindAncestor}, FallbackValue='0,0,0,6'}" />
 		<Setter Property="Padding" Value="10,6,6,0" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="GroupItem">
-					<Expander Header="{Binding Name}" IsExpanded="True">
+					<Expander Header="{Binding Name}" IsExpanded="True" HeaderTemplate="{Binding Path=GroupHeaderTemplate, RelativeSource={RelativeSource AncestorType={x:Type hc:PropertyGrid}, Mode=FindAncestor}}">
 						<Border BorderThickness="1,0,1,1" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource RegionBrush}" CornerRadius="0,0,4,4">
 							<ItemsPresenter Margin="{TemplateBinding Padding}" />
 						</Border>
@@ -9872,43 +9883,49 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Style x:Key="PropertyGridBaseStyle" TargetType="hc:PropertyGrid">
+	<ControlTemplate x:Key="PropertyGridControlTemplate">
+		<Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+			<Grid Margin="{TemplateBinding Padding}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<DockPanel LastChildFill="True" Margin="0,0,0,6">
+					<DockPanel.Visibility>
+						<MultiBinding Converter="{StaticResource BooleanArr2VisibilityConverter}" ConverterParameter="UseAny">
+							<Binding Path="ShowSortButton" RelativeSource="{RelativeSource TemplatedParent}" />
+							<Binding Path="ShowSearchBar" RelativeSource="{RelativeSource TemplatedParent}" />
+						</MultiBinding>
+					</DockPanel.Visibility>
+					<hc:ButtonGroup Margin="0,0,6,0" Visibility="{Binding ShowSortButton,RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" Style="{StaticResource ButtonGroupSolid}">
+						<RadioButton Command="interactivity:ControlCommands.SortByCategory" IsChecked="True">
+							<Rectangle Width="16" Height="16" Fill="{StaticResource SortByCategoryDrawingBrush}" />
+						</RadioButton>
+						<RadioButton Command="interactivity:ControlCommands.SortByName">
+							<Rectangle Width="16" Height="16" Fill="{StaticResource SortByNameDrawingBrush}" />
+						</RadioButton>
+						<RadioButton Command="interactivity:ControlCommands.SortByHierarchyLevel">
+							<Rectangle Width="16" Height="16" Fill="{StaticResource SortByHierarchyLevelDrawingBrush}" />
+						</RadioButton>
+					</hc:ButtonGroup>
+					<hc:SearchBar x:Name="PART_SearchBar" IsRealTime="True" ShowClearButton="True" Style="{StaticResource SearchBarPlus}" Visibility="{Binding ShowSearchBar,RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" />
+				</DockPanel>
+				<hc:PropertyItemsControl Grid.Row="1" x:Name="PART_ItemsControl" Style="{StaticResource PropertyItemsControlBaseStyle}">
+					<hc:PropertyItemsControl.GroupStyle>
+						<GroupStyle ContainerStyle="{StaticResource PropertyGroupItemBaseStyle}" />
+					</hc:PropertyItemsControl.GroupStyle>
+				</hc:PropertyItemsControl>
+			</Grid>
+		</Border>
+	</ControlTemplate>
+	<Style x:Key="PropertyGridBaseStyle" TargetType="{x:Type hc:PropertyGrid}">
 		<Setter Property="MaxTitleWidth" Value="200" />
 		<Setter Property="MinTitleWidth" Value="120" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Padding" Value="10" />
 		<Setter Property="Background" Value="{DynamicResource RegionBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="hc:PropertyGrid">
-					<Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-						<Grid Margin="{TemplateBinding Padding}">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<DockPanel LastChildFill="True" Margin="0,0,0,6">
-								<hc:ButtonGroup Margin="0,0,6,0" Visibility="{Binding ShowSortButton,RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource Boolean2VisibilityConverter}}" Style="{StaticResource ButtonGroupSolid}">
-									<RadioButton Command="interactivity:ControlCommands.SortByCategory" IsChecked="True">
-										<Rectangle Width="16" Height="16" Fill="{StaticResource SortByCategoryDrawingBrush}" />
-									</RadioButton>
-									<RadioButton Command="interactivity:ControlCommands.SortByName">
-										<Rectangle Width="16" Height="16" Fill="{StaticResource SortByNameDrawingBrush}" />
-									</RadioButton>
-								</hc:ButtonGroup>
-								<hc:SearchBar x:Name="PART_SearchBar" IsRealTime="True" ShowClearButton="True" Style="{StaticResource SearchBarPlus}" />
-							</DockPanel>
-							<hc:PropertyItemsControl Grid.Row="1" x:Name="PART_ItemsControl" Style="{StaticResource PropertyItemsControlBaseStyle}">
-								<hc:PropertyItemsControl.GroupStyle>
-									<GroupStyle ContainerStyle="{StaticResource PropertyGroupItemBaseStyle}" />
-								</hc:PropertyItemsControl.GroupStyle>
-							</hc:PropertyItemsControl>
-						</Grid>
-					</Border>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
+		<Setter Property="Template" Value="{StaticResource PropertyGridControlTemplate}" />
 	</Style>
 	<Style x:Key="RateRateItemBaseStyle" TargetType="hc:RateItem">
 		<Setter Property="Focusable" Value="False" />
