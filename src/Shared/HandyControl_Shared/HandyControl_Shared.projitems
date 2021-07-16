@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\IconSwitchElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\ImageAttach.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\InfoElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\MenuItemAttach.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\MenuTopLineAttach.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\PanelElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Attach\PasswordBoxAttach.cs" />
