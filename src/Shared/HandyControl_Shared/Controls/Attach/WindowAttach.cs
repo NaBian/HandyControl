@@ -145,5 +145,43 @@ namespace HandyControl.Controls
 
         public static bool GetHideWhenClosing(DependencyObject element)
             => (bool) element.GetValue(HideWhenClosingProperty);
+
+        public static readonly DependencyProperty KeepCenterOnSizeChangedProperty =
+            DependencyProperty.RegisterAttached("KeepCenterOnSizeChanged", typeof(bool), typeof(WindowAttach),
+                                                new PropertyMetadata(ValueBoxes.FalseBox, KeepCenterOnSizeChangedPropertyChanged));
+
+        [AttachedPropertyBrowsableForType(typeof(System.Windows.Window))]
+        [AttachedPropertyBrowsableForType(typeof(Window))]
+        public static bool GetKeepCenterOnSizeChanged(DependencyObject obj) => (bool) obj.GetValue(KeepCenterOnSizeChangedProperty);
+        public static void SetKeepCenterOnSizeChanged(DependencyObject obj, bool value) => obj.SetValue(KeepCenterOnSizeChangedProperty, value);
+
+        private static void KeepCenterOnSizeChangedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Window window)
+            {
+                if ((bool) e.NewValue)
+                    window.SizeChanged += Window_SizeChanged;
+                else
+                    window.SizeChanged -= Window_SizeChanged;
+            }
+
+            static void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+            {
+                var window = (Window) sender;
+                if (window.WindowStartupLocation != WindowStartupLocation.Manual &&
+                    window.SizeToContent != SizeToContent.Manual)
+                {
+                    var focusedElement = Keyboard.FocusedElement;
+
+                    if (e.WidthChanged)
+                        window.Left += (e.PreviousSize.Width - e.NewSize.Width) / 2;
+                    if (e.HeightChanged)
+                        window.Top += (e.PreviousSize.Height - e.NewSize.Height) / 2;
+
+                    if (focusedElement != null)
+                        Keyboard.Focus(focusedElement);
+                }
+            }
+        }
     }
 }
