@@ -73,7 +73,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Grid Background="{TemplateBinding NonClientAreaBackground}" Name="PART_NonClientArea" TextElement.Foreground="{TemplateBinding NonClientAreaForeground}">
+                            <Grid Panel.ZIndex="1" Background="{TemplateBinding NonClientAreaBackground}" Name="PART_NonClientArea" TextElement.Foreground="{TemplateBinding NonClientAreaForeground}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="Auto"/>
@@ -111,7 +111,7 @@
                                     <ContentPresenter shell:WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="2" x:Name="ContentPresenterMain" Content="{TemplateBinding NonClientAreaContent}"/>
                                 </Grid>
                             </Grid>
-                            <AdornerDecorator Grid.Row="1">
+                            <AdornerDecorator x:Name="AdornerDecorator" Grid.Row="1">
                                 <ContentPresenter ClipToBounds="True"/>
                             </AdornerDecorator>
                             <ResizeGrip Width="10" Height="10" x:Name="ResizeGrip" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" IsTabStop="False" Visibility="Collapsed"/>
@@ -157,6 +157,12 @@
                         </Trigger>
                         <Trigger Property="WindowStyle" Value="None">
                             <Setter Property="ShowNonClientArea" Value="False"/>
+                        </Trigger>
+                        <Trigger Property="ExtendViewIntoNonClientArea" Value="True">
+                            <Setter TargetName="AdornerDecorator" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="AdornerDecorator" Property="Grid.RowSpan" Value="2" />
+                            <Setter Property="ShowTitle" Value="False"/>
+                            <Setter Property="NonClientAreaBackground" Value="Transparent"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>

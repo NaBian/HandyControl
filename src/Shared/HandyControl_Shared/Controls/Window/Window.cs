@@ -79,6 +79,10 @@ namespace HandyControl.Controls
             "IsFullScreen", typeof(bool), typeof(Window),
             new PropertyMetadata(ValueBoxes.FalseBox, OnIsFullScreenChanged));
 
+        public static readonly DependencyProperty ExtendViewIntoNonClientAreaProperty = DependencyProperty.Register(
+                "ExtendViewIntoNonClientArea", typeof(bool), typeof(Window),
+                new PropertyMetadata(ValueBoxes.FalseBox));
+
         private bool _isFullScreen;
 
         private Thickness _actualBorderThickness;
@@ -277,6 +281,12 @@ namespace HandyControl.Controls
             set => SetValue(ShowTitleProperty, ValueBoxes.BooleanBox(value));
         }
 
+        public bool ExtendViewIntoNonClientArea
+        {
+            get => (bool) GetValue(ExtendViewIntoNonClientAreaProperty);
+            set => SetValue(ExtendViewIntoNonClientAreaProperty, ValueBoxes.BooleanBox(value));
+        }
+        
         private static void OnShowNonClientAreaChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var ctl = (Window) d;
